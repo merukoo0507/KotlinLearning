@@ -18,109 +18,77 @@ fun main() {
         但是，除非调用者知道所使用的 Set 的具体实现，否则这些结果对于调用者是不可预测的。
     */
 
-
     /*
-        1. Slice
-        slice() 返回具有给定索引的，集合元素列表。
-        索引既可以是作为区间传入的
-        也可以是作为整数值的集合传入的。
+        1. 按位置取
+        为了检索特定位置的元素，有一个函数 elementAt()。
+        用一个整数作为参数来调用它，你会得到给定位置的集合元素。
+        第一个元素的位置是 0，最后一个元素的位置是 (size - 1)。
+
+        elementAt() 对于不提供索引访问或非静态已知提供索引访问的集合很有用。
+        在使用 List 的情况下，使用索引访问操作符 （get() 或 []）更为习惯。
     */
     println("1-------------------------------------------------")
     val numbers = listOf("one", "two", "three", "four", "five", "six")
-    println(numbers.slice(1..3))
-    println(numbers.slice(0..4 step 2))
-    println(numbers.slice(setOf(3, 5, 0)))
+    println(numbers.elementAt(3))
+
+    val numbersSortedSet = sortedSetOf("one", "two", "three", "four", "five")
+    println(numbersSortedSet)
+    println(numbersSortedSet.elementAt(0))
 
     /*
-        2. Take 与 drop
-        要从头开始获取指定数量的元素，请使用 take() 函数。
-        要从尾开始获取指定数量的元素，请使用 takeLast()。
-        当调用的数字大于集合的大小时，两个函数都将返回整个集合。
+        1.2 按位置取
+        还有一些有用的别名来检索集合的第一个和最后一个元素：first() 和 last()。
+    */
+    println("1.2-------------------------------------------------")
+    println(numbers.first())
+    println(numbers.last())
 
-        要从头或从尾去除给定数量的元素，请调用 drop() 或 dropLast() 函数。
+    /*
+        1.3 为了避免在检索位置不存在的元素时出现异常，请使用 elementAt() 的安全变体：
+
+        当指定位置超出集合范围时，elementAtOrNull() 返回 null。
+        elementAtOrElse() 还接受一个 lambda 表达式，该表达式能将一个 Int 参数映射为一个集合元素类型的实例。
+        当使用一个越界位置来调用时，elementAtOrElse() 返回对给定值调用该 lambda 表达式的结果。
+    */
+    println("1.3-------------------------------------------------")
+    println(numbers.elementAtOrNull(5))
+    println(numbers.elementAtOrElse(5) { index -> "The value for index $index is undefined." })
+
+    /*
+        2. 按条件取
+        函数 first() 和 last() 还可以让你在集合中搜索，与给定谓词匹配的元素。
+        当你使用测试集合元素的谓词调用 first() 时，你会得到对其调用谓词产生 true 的第一个元素。
+        反过来，带有一个谓词的 last() 返回与其匹配的最后一个元素。
     */
     println("2-------------------------------------------------")
-    println(numbers.take(3))
-    println(numbers.takeLast(3))
-    println(numbers.drop(1))
-    println(numbers.dropLast(5))
+    println(numbers.first { it.length > 3 })
+    println(numbers.last { it.startsWith("f") })
 
     /*
-        2.2
-        还可以使用谓词来定义要获取或去除的元素的数量。 有四个与上述功能相似的函数：
-        - takeWhile() 是带有谓词的 take()：
-          它将不停获取元素直到排除与谓词匹配的首个元素。
-          如果首个集合元素与谓词匹配，则结果为空。
-
-        - takeLastWhile() 与 takeLast() 类似：
-          它从集合末尾获取与谓词匹配的元素区间。
-          区间的首个元素是与谓词不匹配的，最后一个元素右边的元素。
-          如果最后一个集合元素与谓词匹配，则结果为空。
-
-        (不清楚)
-        - dropWhile() 与具有相同谓词的 takeWhile() 相反：
-          它将首个与谓词不匹配的元素返回到末尾。
-
-        - dropLastWhile() 与具有相同谓词的 takeLastWhile() 相反：
-          它返回从开头到最后一个与谓词不匹配的元素。
+        2.2 如果没有元素与谓词匹配，两个函数都会抛异常。
+        为了避免它们，请改用 firstOrNull() 和 lastOrNull()：
+        如果找不到匹配的元素，它们将返回 null。
     */
     println("2.2-------------------------------------------------")
-    println(numbers.takeWhile { !it.startsWith('f') })
-    println(numbers.takeLastWhile { it != "three" })
-    println(numbers.dropWhile { it.length == 3 })
-    println(numbers.dropLastWhile { it.contains('i') })
+    println(numbers.firstOrNull { it.length > 6 })
+
 
     /*
-        3. Chunked
-        要将集合分解为给定大小的“块”，请使用 chunked() 函数。
-        chunked() 采用一个参数（块的大小），并返回一个 List 其中包含给定大小的 List。
-        第一个块从第一个元素开始并包含 size 元素，第二个块包含下一个 size 元素，依此类推。 最后一个块的大小可能较小。
+        2.3 或者，如果别名更适合你的情况，那么可以使用别名：
+
+        使用 find() 代替 firstOrNull()
+        使用 findLast() 代替 lastOrNull()
     */
-    println("3-------------------------------------------------")
-    val numbers2 = (0..13).toList()
-    println(numbers2.chunked(3))
+    println("2.3-------------------------------------------------")
+    val numbers2 = listOf(1, 2, 3, 4)
+    println(numbers2.find { it % 2 == 0 })
+    println(numbers2.findLast { it % 2 == 0 })
 
     /*
-        3.2 立即对返回的块应用转换
-        为此，请在调用 chunked() 时将转换作为 lambda 函数提供。
-        lambda 参数是集合的一块。
-        当通过转换调用 chunked() 时， 这些块是临时的 List，应立即在该 lambda 中使用。
+        3. 随机取元素
+        如果需要检索集合的一个随机元素，那么请调用 random() 函数。 你可以不带参数或者使用一个 Random 对象作为随机源来调用它。
     */
-    println("3-------------------------------------------------")
-    println(numbers2.chunked(3) { it.sum() })
-
-    /*
-        4. windowed
-        可以检索给定大小的集合元素中所有可能区间。
-        它返回一个元素区间列表，比如通过给定大小的滑动窗口查看集合，则会看到该区间。
-    */
-    println("4-------------------------------------------------")
-    println(numbers.windowed(3))
-
-    /*
-        4.1 windowed 通过可选参数提供更大的灵活性：
-
-        - step 定义两个相邻窗口的第一个元素之间的距离。
-        默认情况下，该值为 1，因此结果包含从所有元素开始的窗口。
-        如果将 step 增加到 2，将只收到以奇数元素开头的窗口：第一个、第三个等。
-
-        - partialWindows 包含从集合末尾的元素开始的较小的窗口。
-        例如，如果请求三个元素的窗口，就不能为最后两个元素构建它们。
-        在本例中，启用 partialWindows 将包括两个大小为2与1的列表。
-        最后，可以立即对返回的区间应用转换。 为此，在调用 windowed() 时将转换作为 lambda 函数提供。
-    */
-    println("4.1-------------------------------------------------")
-    println(numbers2.windowed(3, step = 2, partialWindows = true))
-    println(numbers2.windowed(3) { it.sum() })
-
-    /*
-        4.2 要构建两个元素的窗口，有一个单独的函数——zipWithNext()。
-        它创建接收器集合的相邻元素对。
-        请注意，zipWithNext() 不会将集合分成几对；
-        它为 每个 元素创建除最后一个元素外的对，因此它在 [1, 2, 3, 4] 上的结果为 [[1, 2], [2, 3], [3, 4]]，而不是 [[1, 2]，[3, 4]]。
-        zipWithNext() 也可以通过转换函数来调用；它应该以接收者集合的两个元素作为参数。
-    */
-    println("4.2-------------------------------------------------")
-    println(numbers.zipWithNext())
-    println(numbers.zipWithNext(){ s1, s2 -> s1.length > s2.length })
+    println("2-------------------------------------------------")
+    println(numbers.first { it.length > 3 })
+    println(numbers.last { it.startsWith("f") })
 }
