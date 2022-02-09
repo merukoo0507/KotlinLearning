@@ -88,7 +88,34 @@ fun main() {
         3. 随机取元素
         如果需要检索集合的一个随机元素，那么请调用 random() 函数。 你可以不带参数或者使用一个 Random 对象作为随机源来调用它。
     */
-    println("2-------------------------------------------------")
-    println(numbers.first { it.length > 3 })
-    println(numbers.last { it.startsWith("f") })
+    println("3-------------------------------------------------")
+    println(numbers2.random())
+
+    // 3.2 On empty collections, random() throws an exception.
+    // To receive null instead, use randomOrNull()
+    println("3.2-------------------------------------------------")
+    println(emptyList<Int>().randomOrNull())
+
+    /*
+        4. 检测存在与否
+        如需检查集合中某个元素的存在，可以使用 contains() 函数。
+        如果存在一个集合元素等于（equals()）函数参数，那么它返回 true。
+        你可以使用 in 关键字以操作符的形式调用 contains()。
+
+        如需一次检查多个实例的存在，可以使用这些实例的集合作为参数调用 containsAll()。
+    */
+    println("4-------------------------------------------------")
+    println(numbers.contains("four"))
+    println("zero" in numbers)
+
+    println(numbers.containsAll(listOf("four", "two")))
+    println(numbers.containsAll(listOf("four", "zero")))
+
+    // 4.2 此外，你可以通过调用 isEmpty() 和 isNotEmpty() 来检查集合中是否包含任何元素。
+    println("4.2-------------------------------------------------")
+    println(numbers.isEmpty())
+    println(numbers.isNotEmpty())
+
+    println(emptyList<Int>().isEmpty())
+    println(emptyList<Int>().isNotEmpty())
 }
