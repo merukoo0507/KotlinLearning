@@ -14,8 +14,8 @@ fun main() {
     println("1-------------------------------------------------")
     val numbers = listOf(6, 42, 10, 4)
     println("Count: ${numbers.count()}")
-    println("Max: ${numbers.max()}")
-    println("Min: ${numbers.min()}")
+    println("Max: ${numbers.maxOrNull()}")
+    println("Min: ${numbers.minOrNull()}")
     println("Average: ${numbers.average()}")
     println("Sum: ${numbers.sum()}")
 
@@ -26,11 +26,11 @@ fun main() {
         maxWith()/minWith() 接受一个 Comparator 对象并且根据此 Comparator 对象返回最大或最小元素。
     */
     println("1.2-------------------------------------------------")
-    val min3Remainder = numbers.minBy { it % 3 }
+    val min3Remainder = numbers.minByOrNull { it % 3 }
     println("min3Remainder: $min3Remainder")
 
     val strs = listOf("one", "two", "three", "four")
-    val longestString = strs.maxWith(compareBy { it.length })
+    val longestString = strs.maxWithOrNull(compareBy { it.length })
     println("longestString: $longestString")
 
     /*
