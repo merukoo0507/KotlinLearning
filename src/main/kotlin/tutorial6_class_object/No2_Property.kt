@@ -13,11 +13,11 @@ fun main() {
 
 /*
 * 1.
-* var <propertyName>[: <PropertyType>] [= <property_initializer>]
-    [<getter>]
-    [<setter>]
-* 其初始器（initializer）、getter 和 setter 都是可选的。
-* 属性类型如果可以从初始器 （或者从其 getter 返回值，如下文所示）中推断出来，也可以省略。
+*   var <propertyName>[: <PropertyType>] [= <property_initializer>]
+        [<getter>]
+        [<setter>]
+*   其初始器（initializer）、getter 和 setter 都是可选的。
+*   属性类型如果可以从初始器 （或者从其 getter 返回值，如下文所示）中推断出来，也可以省略。
 * */
 class Address {
     // 2.
