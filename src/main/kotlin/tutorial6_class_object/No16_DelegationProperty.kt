@@ -1,6 +1,7 @@
 package tutorial6_class_object
 
 import kotlin.properties.Delegates
+import kotlin.properties.ReadWriteProperty
 import kotlin.reflect.KProperty
 
 // 委托属性
@@ -56,7 +57,17 @@ fun main() {
     ex()
 
     println("6-------------------------------------------------")
-    Owner()
+    var owner = Owner()
+    owner.resource1.invoke()
+    owner.resource2.invoke()
+    owner.resource2 = Resource().apply {
+        data = "22"
+    }
+    owner.resource2.invoke()
+
+    println("readOnly = ${owner.readOnly}")
+    owner.readWrite = 123
+    println("readWrite = ${owner.readWrite}")
 }
 
 /*
@@ -96,16 +107,8 @@ class MyClass {
     var mage by mutableMap
 }
 
-/*
-* 6. 属性委托要求
-* 6-1 只读属性
-* （即 val 声明的），委托必须提供一个操作符函数 getValue()，该函数具有以下参数：
-* thisRef —— 必须与 属性所有者 类型（对于扩展属性——指被扩展的类型）相同或者是其超类型。
-* property —— 必须是类型 KProperty<*> 或其超类型
-* */
-
 class Resource {
-    var data = ""
+    var data = "__"
     fun invoke() {
         println("Resource: $data")
     }
@@ -114,28 +117,65 @@ class Resource {
 class Owner {
     val resource1 by ResourceDelegate()
     var resource2 by ResourceDelegate2()
+
+    val readOnly by resourceDelegate()
+    var readWrite by resourceDelegate()
 }
 
+/*
+*   6. 属性委托要求
+*   6-1 只读属性
+*   （即 val 声明的），委托必须提供一个操作符函数 getValue()，该函数具有以下参数：
+*   thisRef —— 必须与 属性所有者 类型（对于扩展属性——指被扩展的类型）相同或者是其超类型。
+*   property —— 必须是类型 KProperty<*> 或其超类型
+* */
 class ResourceDelegate {
     operator fun getValue(thisRef: Owner, property: KProperty<*>): Resource {
+//        println("thisRef: $thisRef, property: $property")
         return Resource()
     }
 }
 
 /*
-* 6-2 可变属性
-* （即 var 声明的），委托必须额外提供一个操作符函数 setValue()， 该函数具有以上参数還多加一個參數：
-* value — 必须与属性类型相同（或者是其超类型）。
+*   6-2 可变属性
+*   (即 var 声明的)，委托必须额外提供一个操作符函数 setValue()，， 该函数具有以下参数：
+*   thisRef —— 必须与 属性所有者 类型（对于扩展属性——指被扩展的类型）相同或者是其超类型。
+*   property —— 必须是类型 KProperty<*> 或其超类型。
+*   value — 必须与属性类型相同（或者是其超类型）。
+*
+*   getValue() 或/与 setValue() 函数可以通过委托类的成员函数提供或者由扩展函数提供。
+*   当你需要委托属性到原本未提供的这些函数的对象时后者会更便利。 两函数都需要用 operator 关键字来进行标记。
+*
 * */
 class ResourceDelegate2(private var resource: Resource = Resource()) {
     operator fun getValue(thisRef: Owner, property: KProperty<*>): Resource {
-        return Resource()
+        return resource
     }
 
     operator fun setValue(thisRef: Owner, property: KProperty<*>, value: Any?) {
         if (value is Resource)
             resource = value
     }
+}
+
+/*
+    You can create delegates as anonymous objects without creating new classes
+    using the interfaces ReadOnlyProperty and ReadWriteProperty from the Kotlin standard library.
+    They provide the required methods:
+    getValue() is declared in ReadOnlyProperty;
+    ReadWriteProperty extends it and adds setValue().
+    Thus, you can pass a ReadWriteProperty whenever a ReadOnlyProperty is expected.
+ */
+fun resourceDelegate() = object : ReadWriteProperty<Any?, Int> {
+    var curValue = 0
+    override fun getValue(thisRef: Any?, property: KProperty<*>): Int {
+        return curValue
+    }
+
+    override fun setValue(thisRef: Any?, property: KProperty<*>, value: Int) {
+        curValue = value
+    }
+
 }
 
 /*
