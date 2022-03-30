@@ -1,20 +1,22 @@
 ### Kotlin 解决了一些 Java 中的问题
 * 空引用由类型系统控制
   * 使用安全调用操作符?
-  > println(a?.length)
-* 无原始类型
-  * 在 Kotlin 中，所有直都是object，Java 的装箱原始类型映射到可空的 Kotlin 类型：
-
-| Java type	| Kotlin type
-|----------|-----|
-| java.lang.Byte | kotlin.Byte?
-| java.lang.Short | kotlin.Short?
-| java.lang.Integer | kotlin.Int?
-| java.lang.Long | kotlin.Long?
-| java.lang.Character | kotlin.Char?
-| java.lang.Float | kotlin.Float?
-| java.lang.Double | kotlin.Double?
-| java.lang.Boolean | kotlin.Boolean?
+  ```
+  println(a?.length)
+  ```
+  * 无原始类型
+    * 在 Kotlin 中，所有直都是object，Java 的装箱原始类型映射到可空的 Kotlin 类型：
+  
+    | Java type	| Kotlin type
+    |----------|-----|
+    | java.lang.Byte | kotlin.Byte?
+    | java.lang.Short | kotlin.Short?
+    | java.lang.Integer | kotlin.Int?
+    | java.lang.Long | kotlin.Long?
+    | java.lang.Character | kotlin.Char?
+    | java.lang.Float | kotlin.Float?
+    | java.lang.Double | kotlin.Double?
+    | java.lang.Boolean | kotlin.Boolean?
 
 * kotlin的lambda有類型：
   * () -> Unit, Java為一個interface內只包含一個方法
@@ -35,17 +37,22 @@
 * Kotlin 能够扩展个类的新功能而无需继承该类或者使用像装饰者这样的设计模式。
   * [扩展](../src/main/kotlin/tutorial6_class_object/No6_Expand.kt)
 * 空安全
-* 类型检测"is"与“不安全的”类型转换"as"
-  > val x: String? = y as String?
-* 类型检测"is"与“不安全的”类型转换"as"
+* 類型轉換
+  * 類型檢測"is"
+  * “不安全的”类型转换"as"，若非該類型則會拋出異常
+  * 智能轉換，在顯示中會自動轉換型態
+  ```
+    var n = 13
+    println(n)
+  ```
 * 字串可加入，以＄符號開頭，花括号括起来的任意表达式的值
 * 類中屬性語法如下，包含初始器（initializer）、getter 和 setter
   * [属性](../src/main/kotlin/tutorial6_class_object/No2_Property.kt)
-```  
-var <propertyName>[: <PropertyType>] [= <property_initializer>]
-    [<getter>]
-    [<setter>
-```
+  ```  
+  var <propertyName>[: <PropertyType>] [= <property_initializer>]
+      [<getter>]
+      [<setter>
+  ```
 * [主构造函数](../src/main/kotlin/tutorial6_class_object/No1_ClassInheritance.kt)
   * 有一个主构造函数以及一个或多个次构造函数
 * [委托](../src/main/kotlin/tutorial6_class_object/No15_Delegation.kt)
